@@ -18,8 +18,6 @@ while count < 6:
         print(count)
         command = commands['prog' + str(count)][0]
         args = commands['prog' + str(count)][1]
-        print('command: ' + command)
-        print('args: ' + args[0] + args[1])
         os.execv(command, args)
     else:
         os.wait()        
