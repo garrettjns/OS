@@ -1,4 +1,4 @@
-#!usr/bin/python3
+#!/usr/bin/python3
 # spinner.py ... burns some CPU cycles to kill time 
 # Nigel Ward, UTEP, January 2021
 
