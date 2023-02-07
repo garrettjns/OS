@@ -11,7 +11,8 @@ commands = {'prog1' : ['/usr/bin/cat', ('cat', '/proc/cpuinfo')],
             'prog3' : ['/cygdrive/c/cs_4375/pre-shell/spinner.py', ("./spinner.py","1000000")],
             'prog4' : ["/usr/bin/uname", ("uname", "-a")],
             'prog5' : ['/cygdrive/c/cs_4375/pre-shell/spinner.py', ("./spinner.py","2000000", ' &')]}
-
+prog_found = True
+pipe_flag = False
 
 def cd(inp):
 
@@ -144,22 +145,83 @@ while True:
         
         cd(inp)
         continue
-    
-    path, args, prog_found = split_args(inp)
+
+    if '|' in inp:
+        pipe_flag = True
+        cmd1, cmd2 = inp.split('|')
+        path, args, prog_found = split_args(cmd1)
+        path2, args2, prog_found2 = split_args(cmd2)
+        print(path2, args2, prog_found2)
+        print(path, args, prog_found)
+    else:
+        path, args, prog_found = split_args(inp)
 
     if not prog_found:
         print("Error - Program not found")
         continue
+    if pipe_flag:
+        
+        r, w = os.pipe()
+        
+        inheritable = True
+        os.set_inheritable(r, inheritable)
+        os.set_inheritable(w, inheritable)
+        c1 = os.fork()
+        
+        if c1 < 0:
+            print("Error forking")
+        if c1 == 0:
+            os.close(1)
+            os.dup(w) #process writes to file descriptor w
+            '''
+            os.close(0)
+            os.close(2)
+            os.close(3)
+            os.close(4)
+            '''
+            rc = os.execv(path, args)
+            if rc != 0:
+                print("Program terminated: exit code " + rc)
+                exit()
+                
+                exit()
+        os.wait()
+    
+        c2 = os.fork()
 
-    pid = os.fork()
-
-    if pid < 0:
-        print("Error forking")
-    elif pid == 0:
-        print(args)
-        rc = os.execv(path, args)
-        if rc != 0:
-            print("Program terminated: exit code " + rc)
+        if c2 == 0:
+            os.close(0)
+            os.dup(w) #connect read end of pipe to stdin
+            #close extra connections
+            '''
+            os.close(2)
+            os.close(3)
+            os.close(4)
+            '''
+            rc = os.execv(path2, args2)
+            if rc != 0:
+                print("Program terminated: exit code " + rc)
+        os.wait()
     else:
-        os.wait()        
+        cpid = os.fork()
+
+        if cpid < 0:
+            print("Error forking")
+        elif cpid == 0:
+            print("Child ID is: ", os.getpid())
+            rc = os.execv(path, args)
+            if rc != 0:
+                print("Program terminated: exit code " + rc)
+                exit()
+        
+        os.wait()
+
+            #print(rc)
+            #pid, status = os.waitpid(cpid, os.WNOHANG)
+
+            #print("-----> ", pid)
+        
+            #print(pid)
+
+            #print(status)
     
