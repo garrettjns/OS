@@ -59,7 +59,7 @@ def split_args (inp):
 
         command, arguments = inp.split(maxsplit=1)
 
-        command.strip()
+        command = command.strip()
 
         arg_list = arguments.split()
 
