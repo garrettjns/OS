@@ -73,7 +73,7 @@ def delete_socket(s):
 
 #introduces delay before send
 def time_func():
-    print(time.sleep(int(5)))
+    print(time.sleep(int(4*random.random())))
     
 while inputs:
     readable, _, exceptional = select.select(inputs, inputs, inputs)
