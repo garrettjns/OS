@@ -14,31 +14,32 @@ start_timer = False
 
 client_sock.setblocking(0)
 counter = 0
-
+t1 = datetime.now().strftime('%H:%M:%S')
 while True:
-        try: 
+        try:
+                #print("receiving...")
                 server_data = client_sock.recv(4096)
                 if server_data:
                         print("\nserver localhost replied at " + datetime.now().strftime('%H:%M:%S') +  ": " + \
                               server_data.decode() + "\n")
                         if "bye" not in server_data.decode():
                                 try:
+                                        print("sending")
                                         client_sock.send(input().encode())
                                         t1 = datetime.now().strftime('%H:%M:%S')
                                         print("sent to server at : ", t1)
                                         counter = 0
                                 except error:
                                         continue
-                        t1 = datetime.now().strftime('%H:%M:%S')
-                else:
-                        print(server_data.decode())
-                        client_sock.close()
-                        break
+                        else:
+                                print(server_data.decode())
+                                client_sock.close()
+                                break
         #the socket has no data yet
 
 
         except error:
-                
+                print(t1)
                 t2 = datetime.now().strftime('%H:%M:%S')
 
                 sec2 = int(t2.split(":")[2])
