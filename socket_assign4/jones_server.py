@@ -72,7 +72,8 @@ def delete_socket(s):
 
 #introduces delay before send
 def time_func():
-    print(time.sleep(int(4*random.random())))
+    #4*random.random()
+    print(time.sleep(int(2)))
     
 while inputs:
     readable, _, exceptional = select.select(inputs, inputs, inputs)
@@ -90,6 +91,7 @@ while inputs:
         else:
             print(s.getpeername(), ": ", socket_states[s])
             data = s.recv(4096)
+            print (data)
             if data:
                 # A readable client socket has data
                 if socket_states[s] == 1:

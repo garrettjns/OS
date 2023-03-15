@@ -1,11 +1,10 @@
-
 from socket import *
 from datetime import datetime
 
 client_sock = socket(AF_INET, SOCK_STREAM)
 
 try:
-        client_sock.connect(("localhost", 8080))
+        client_sock.connect(("localhost", 7069))
 #cannot connect to server: close client socket
 except:
         print("Error connecting to server")
@@ -26,13 +25,16 @@ while True:
                               server_data.decode() + "\n")
                         if "bye" not in server_data.decode():
                                 try:
-                                        print("sending...")
-                                        client_sock.send(input().encode())
+                                        response = input()
+                                        while not response:
+                                                print("Please enter valid input\n")    
+                                                response = input()
+                                        client_sock.send(response.encode())
                                         t1 = datetime.now().strftime('%H:%M:%S')
                                         print("sent to server at : ", t1)
                                         counter = 0
                                 except error:
-                                        continue
+                                          continue
                         else:
                                 client_sock.close()
                                 break
