@@ -26,7 +26,7 @@ def processUtep(occurrence):
 def seekUtepInBuffer(buffer, f, switch):
     global key
     bufferLen = len(buffer)
-    if not switch:  # seek forwards
+    if not switch:  # search forwards in buffer
         for i in range(bufferLen - len(key)):
             if buffer[i] == key[0]:
                 if buffer[i:i+len(key)] == key:
@@ -35,7 +35,7 @@ def seekUtepInBuffer(buffer, f, switch):
                     f.seek(len(key) + i - bufferLen, 1)  # seek backwards
                     return True
         f.seek(-len(key), 1)
-    else:   # seek backwards
+    else:   # search backwards in buffer
         for i in range(bufferLen - 1, 6, -1):
             if buffer[i] == key[7]:
                 if buffer[i-len(key)+1:i+1] == key:
